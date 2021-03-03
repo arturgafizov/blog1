@@ -1,4 +1,7 @@
 from django.contrib import admin
-from users.models import User
-# Register your models here.
-# admin.site.unregister(User)
+from users.models import Profile
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    pass
