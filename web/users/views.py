@@ -34,8 +34,8 @@ from . import services
 from . import serializers
 from . import swagger_schemas as schemas
 
-from users.models import User
-from users.serializers import UserSerializer
+from users.models import Profile
+from users.serializers import ProfileSerializer
 
 # class UserRetrieve(generics.ListCreateAPIView):
 #     queryset = User.objects.all()
@@ -44,16 +44,16 @@ from users.serializers import UserSerializer
 
 class UserRetrieve(APIView):
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'profile_detail.html'
+    template_name = 'users/profile_detail.html'
 
     def get(self, request, pk):
-        profile = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(profile)
+        profile = get_object_or_404(Profile, pk=pk)
+        serializer = ProfileSerializer(profile)
         return Response({'serializer': serializer, 'profile': profile})
 
     def post(self, request, pk):
-        profile = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(profile, data=request.data)
+        profile = get_object_or_404(Profile, pk=pk)
+        serializer = ProfileSerializer(profile, data=request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer, 'profile': profile})
         serializer.save()
@@ -70,8 +70,9 @@ class UserRetrieve(APIView):
 
 class UserList(APIView):
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'profile.html'
+    template_name = 'users/profile.html'
 
     def get(self, request):
-        queryset = User.objects.all()
+        queryset = Profile.objects.all()
         return Response({'profiles': queryset})
+
