@@ -137,6 +137,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+MEDIA_ITEM_IMAGE_DIR = 'avatar_images/'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
