@@ -1,71 +1,69 @@
-"""
-Example API endpoint with Swagger documentation:
-
-    class ExampleViewSet(viewsets.ViewSet):
-
-        @swagger_auto_schema(responses=schemas.response_schema_dict)
-        def list(self, request):
-            '''
-            Example API for retrieving users list.
-
-                Access for all.
-
-                Example enum description:
-                    IN_PROGRESS = 1
-                    REJECTED = 2
-                    CLOSED = 3
-            '''
-            queryset = User.objects.all()
-            serializer = UserSerializer(queryset, many=True)
-            return Response(serializer.data)
-"""
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from rest_framework import views
-from rest_framework import viewsets
-from rest_framework import generics
-from rest_framework import mixins
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.renderers import TemplateHTMLRenderer
 from django.shortcuts import redirect
-
-from . import services
+from rest_framework.generics import GenericAPIView
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from . import serializers
 from . import swagger_schemas as schemas
 
 from users.models import Profile
-from users.serializers import ProfileSerializer
+from users.serializers import ProfileSerializer,  UploadAvatarSerializer
 
 # class UserRetrieve(generics.ListCreateAPIView):
 #     queryset = User.objects.all()
 #     serializer_class = UserSerializer
 
 
-class UserRetrieve(APIView):
+class UploadAvatarView(GenericAPIView):
+    serializer_class = UploadAvatarSerializer
+    parser_classes = [MultiPartParser]
+
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), user=self.request.user)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def get_queryset(self):
+        return Profile.objects.filter(user=self.request.user).select_related('user')
+
+    def post(self, request):
+        print(request.data)
+        serializer = self.get_serializer(self.get_object(), data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+class UserRetrieveView(GenericAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'users/profile_detail.html'
+    serializer_class = ProfileSerializer
 
-    def get(self, request, pk):
-        profile = get_object_or_404(Profile, pk=pk)
-        serializer = ProfileSerializer(profile)
-        return Response({'serializer': serializer, 'profile': profile})
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), user=self.request.user)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
-    def post(self, request, pk):
-        profile = get_object_or_404(Profile, pk=pk)
-        serializer = ProfileSerializer(profile, data=request.data)
-        if not serializer.is_valid():
-            return Response({'serializer': serializer, 'profile': profile})
-        serializer.save()
-        return redirect('profile-list')
+    def get_queryset(self):
+        return Profile.objects.filter(user=self.request.user).select_related('user')
 
-#     def put(self, request, pk, format=None):
-#         ...
-#
-#     def patch(self, request, pk, format=None):
-#         ...
-#
-#     def delete(self, request, pk, format=None):
+    def get(self, request):
+        profile = self.get_object()
+        serializer = self.get_serializer(profile)
+        return Response({'profile': serializer.data}, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        profile = self.get_object()
+        serializer = self.get_serializer(profile)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'profile': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'profile': serializer.data}, status=status.HTTP_404_NOT_FOUND)
+
+        # return redirect('profile-detail')
 
 
 class UserList(APIView):
