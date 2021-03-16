@@ -34,3 +34,24 @@ class UploadAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('avatar',)
+
+
+class UploadAvatarUserSerializer(serializers.Serializer):
+    avatar = serializers.ImageField()
+
+    def save(self):
+        print(self.instance, self.validated_data)
+        self.instance.old_avatar_delete()
+        self.instance.avatar = self.validated_data.get('avatar')
+        self.instance.save()
+
+
+class RelatedAvatarSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField()
+
+    def relate_avatar(self, **kwargs):
+        pass
+
+    class Meta:
+        model = Profile
+        fields = ('avatar',)
