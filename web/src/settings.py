@@ -152,3 +152,6 @@ LOCALE_PATHS = (
 LANGUAGES = (
     ('en', _('English')),
 )
+
+OLD_PASSWORD_FIELD_ENABLED = True
+LOGOUT_ON_PASSWORD_CHANGE = True
