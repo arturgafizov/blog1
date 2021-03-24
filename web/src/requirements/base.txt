@@ -40,3 +40,4 @@ django-cacheops==5.1
 
 # ImageField
 pillow==8.1.1
+
