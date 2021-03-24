@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from users.models import Profile
 from main.serializers import UserSerializer
-# Create your serializers here.
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -14,7 +13,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         # depth = 1
         extra_kwargs = {
             'avatar': {'read_only': False},
-         }
+        }
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -46,12 +45,3 @@ class UploadAvatarUserSerializer(serializers.Serializer):
         self.instance.save()
 
 
-class RelatedAvatarSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField()
-
-    def relate_avatar(self, **kwargs):
-        pass
-
-    class Meta:
-        model = Profile
-        fields = ('avatar',)
