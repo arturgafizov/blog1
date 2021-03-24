@@ -1,21 +1,17 @@
-from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.renderers import TemplateHTMLRenderer
-from django.shortcuts import redirect
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
-from dj_rest_auth.views import PasswordChangeView
-from . import serializers
-from . import swagger_schemas as schemas
+
 
 from users.models import Profile
-from users.serializers import ProfileSerializer,  UploadAvatarSerializer, UploadAvatarUserSerializer
-# class UserRetrieve(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+from users.serializers import (ProfileSerializer,
+                               UploadAvatarSerializer,
+                               UploadAvatarUserSerializer,
+                               )
 
 
 class UploadAvatarView(GenericAPIView):
@@ -77,5 +73,5 @@ class UserList(APIView):
         return Response({'profiles': queryset})
 
 
-class ChangeUserPasswordView(PasswordChangeView):
-    pass
+
+
