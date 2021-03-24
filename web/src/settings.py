@@ -1,7 +1,7 @@
 import os
 
 from django.utils.translation import gettext_lazy as _
-
+from .additional_settings.allauth_settings import *
 from .additional_settings.defender_settings import *
 from .additional_settings.swagger_settings import *
 from .additional_settings.jwt_settings import *
@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'rest_framework_api_key',
     'drf_yasg',
     'corsheaders',
-
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
 ]
 
 MIDDLEWARE = [
@@ -155,3 +157,5 @@ LANGUAGES = (
 
 OLD_PASSWORD_FIELD_ENABLED = True
 LOGOUT_ON_PASSWORD_CHANGE = True
+
+SITE_ID = 1
