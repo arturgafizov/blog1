@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+from django_countries.fields import CountryField
 from . import managers
 from src.settings import MEDIA_ITEM_IMAGE_DIR
 
@@ -28,3 +28,11 @@ class Profile(models.Model):
     def old_avatar_delete(self):
         if self.avatar:
             self.avatar.delete()
+
+
+class Address(models.Model):
+    country = CountryField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='address_set')
+    state = models.CharField(max_length=100, default='')
+    city = models.CharField(max_length=100, default='')
+    street = models.CharField(max_length=100, default='')
