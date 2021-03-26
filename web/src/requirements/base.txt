@@ -41,3 +41,8 @@ django-cacheops==5.1
 # ImageField
 pillow==8.1.1
 
+# PhoneNumberField
+django-phonenumber-field==5.0.0
+phonenumbers==8.12.18
+
+django-countries==7.1
