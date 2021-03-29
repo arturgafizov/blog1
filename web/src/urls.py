@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('main.urls')),
     path('users/', include('users.urls')),
     path('registrations/', include('registrations.urls')),
+    path('articles/', include('articles.urls')),
     path(f'{admin_url}/', admin.site.urls),
     path(f'{admin_url}/defender/', include('defender.urls')),
     path('api/', include('rest_framework.urls')),
