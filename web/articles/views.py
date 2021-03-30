@@ -15,3 +15,9 @@ class ArticleViewSet(ModelViewSet):
     def get_queryset(self):
         return Article.objects.all()
 
+
+class CategoryViewSet(ModelViewSet):
+    serializer_class = serializers.CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.all()
