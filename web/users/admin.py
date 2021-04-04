@@ -5,7 +5,7 @@ from users.models import Profile, Address
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mobile', 'location', )
+    list_display = ('user', 'mobile', 'location', 'avatar_image', )
     search_fields = ['location', ]
 
 

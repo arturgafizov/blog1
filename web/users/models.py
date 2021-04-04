@@ -4,6 +4,7 @@ from django_countries.fields import CountryField
 from . import managers
 from src.settings import MEDIA_ITEM_IMAGE_DIR
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils.safestring import mark_safe
 
 User = get_user_model()
 
@@ -19,7 +20,6 @@ class Profile(models.Model):
     location = models.CharField(max_length=200)
     avatar = models.ImageField(null=True, blank=True, upload_to=avatar_upload_patch)
     objects = models.Manager()
-    headshot = models.ImageField(null=True, blank=True, upload_to="hero_headshots/")
 
     def __str__(self) -> str:
         return f'{self.user} {self.id}'
@@ -30,6 +30,12 @@ class Profile(models.Model):
     def old_avatar_delete(self):
         if self.avatar:
             self.avatar.delete()
+
+    def avatar_image(self):
+        url = self.avatar.url if self.avatar else ''
+        return mark_safe('<img src="%s" width="150" height="150" />' % (url, ))
+
+    avatar_image.short_description = 'Avatar'
 
 
 class Address(models.Model):
