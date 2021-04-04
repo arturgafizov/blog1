@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'django_countries',
     'phonenumber_field',
+    'treebeard',
 ]
 
 MIDDLEWARE = [
