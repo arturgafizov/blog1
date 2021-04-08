@@ -73,3 +73,8 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='parent_set', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='user_comment', null=True, blank=True)
+    objects = models.Manager
+
+    def __str__(self):
+        return str(f'{self.author}, {self.content}')
