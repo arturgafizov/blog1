@@ -76,5 +76,5 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='user_comment', null=True, blank=True)
     objects = models.Manager
 
-    def __str__(self):
-        return str(f'{self.author}, {self.content}')
+    def __str__(self) -> str:
+        return f'{self.id}, {self.author}, {self.content}'
