@@ -47,6 +47,23 @@ class CommentSerializer(serializers.ModelSerializer):
         # )
 
 
+class UpdateCommentSerializer(serializers.ModelSerializer):
+    content = serializers.CharField()
+
+    class Meta:
+        model = Comment
+
+        fields = ('id', 'content', 'updated',)
+
+    def validate(self, attrs):
+        user = self.context.get('request').user
+        if not user.is_authenticated and user != self.instance.user:
+            if self.context.get('request').method == 'PUT':
+                raise serializers.ValidationError({'content': 'Вы не можете редактировать комментарий'})
+            raise serializers.ValidationError({'content': 'Вы не можете удалить комментарий'})
+        return attrs
+
+
 class ShortArticleSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
@@ -64,7 +81,4 @@ class ArticleSerializer(ShortArticleSerializer):
     comments = CommentSerializer(many=True, source='comment_set')
 
     class Meta(ShortArticleSerializer.Meta):
-        fields = ShortArticleSerializer.Meta.fields + ('comments', 'content', )
-
-
-
+        fields = ShortArticleSerializer.Meta.fields + ('comments', 'content',)
