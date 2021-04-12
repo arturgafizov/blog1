@@ -1,6 +1,7 @@
 from django.db.models import Count
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_202_ACCEPTED, HTTP_201_CREATED
 from rest_framework.viewsets import ModelViewSet
@@ -39,8 +40,14 @@ class CategoryViewSet(ModelViewSet):
 
 
 class CommentViewSet(ModelViewSet):
-    serializer_class = serializers.CommentSerializer
-    permission_classes = ()
+    permission_classes = (AllowAny, )
+
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return serializers.UpdateCommentSerializer
+        if self.action == 'destroy':
+            return serializers.UpdateCommentSerializer
+        return serializers.CommentSerializer
 
     def get_queryset(self):
         # return Comment.objects.filter(user=self.request.user).select_related('user')
@@ -49,13 +56,20 @@ class CommentViewSet(ModelViewSet):
     def create(self, request, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(EditCommentPermission)
+        serializer.save()
         return Response(serializer.data, status=HTTP_201_CREATED)
 
-    # def update(self, request, **kwargs):
-    #     instance = self.get_queryset()
-    #     serializer = self.get_serializer(instance, data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #
-    #     return Response(serializer.data)
+    def update(self, request, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
